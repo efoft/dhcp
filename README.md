@@ -1,4 +1,4 @@
-# puppet-dnsmasq module
+# puppet-dhcp module
 Puppet 4 module to install and configure isc-dhcp.
 
 ## Installation
