@@ -16,7 +16,7 @@ class { '::dhcp':
 ```
 Parameter $subnets describe subnet declaraion. This module use pools within subnet. Pools allow to split single network into ranges with different settings.
 
-Subnet mast have parameters:
+Subnet must have the following parameters:
 * network
 * netmask
 * router
@@ -25,17 +25,17 @@ Subnet mast have parameters:
 * pools
 
 It can also contain optional parameters:
-* failover - if to include this instance of dhcp into failover cluster. See failover_* params in the module doc.
-* ddns - if to update BIND DNS server dynamicly with records for assigned addresses. For this case BIND must be installed and set up to use DDN, key file is required.
-* ddns_zones - array of BIND zone names to be dynamicly updated
+* failover - if to include this instance of dhcp into failover cluster. See failover_* params in the module's doc.
+* ddns - if to update BIND DNS server dynamicly with records of assigned addresses. For this case BIND must be installed and set up to use DDNS, and rndc key file is required.
+* ddns_zones - array of BIND zones names to be dynamicly updated
 * next_server and filename are subnet level defined options to set up pxe boot. They can also be defined or overriden at pool level.
 
-Pools are dhcp IP ranges that must have parameters:
+Pools are the dhcp IP ranges that must have parameters:
 * start - first IP address in a range
 * end   - last IP address in a range
 Pools can contain some optional parameters:
 * static_only - means that this range is used to serve only staticly declared hosts
-* pxe - if to enable booting clients via network using this range.
+* pxe - if to enable booting clients via network using this range
 * next_server and filename - can be defined here as well as at subnet level
 * ttl - default and max lease time in seconds.
 
