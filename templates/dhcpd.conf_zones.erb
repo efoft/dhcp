@@ -1,0 +1,3 @@
+<% @_ddns_zones.each do |zone| -%>
+zone <%= zone %>. { primary <%= @_ddns_primary %>; key <%= @ddns_key_name %>; }
+<% end -%>
