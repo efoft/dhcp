@@ -1,0 +1,14 @@
+## This file is managed by Puppet
+## DO NOT edit manually
+##
+
+<% if !@static_hosts.empty? -%>
+<% @static_hosts.sort_by {|host,options| options['ip'].to_i}.each do |host,options| -%>
+host <%= host %> {
+	option host-name "<%= host %>.<%= @domain %>";
+	hardware ethernet <%= options['mac'] %>;
+	fixed-address <%= options['ip'] %>;
+}
+
+<% end -%>
+<% end -%>

@@ -1,0 +1,33 @@
+# This file is managed by Puppet
+# DO NOT EDIT MANUALLY
+#
+authoritative;
+
+default-lease-time 600;
+max-lease-time 7200;
+
+log-facility local7;
+
+ignore client-updates;
+update-static-leases on;
+one-lease-per-client on;
+
+deny duplicates;
+
+<% if @failover -%>
+failover peer "<%= @failover_cluster %>" {
+        <%= @failover_role %>;
+	address <%= @failover_myip %>;
+        port <%= @failover_port %>;
+	peer address <%= @failover_peer %>;
+        peer port <%= @failover_port %>;
+	max-response-delay 60;
+	max-unacked-updates 10;
+	mclt 3600;
+<% if @failover_role == 'primary' -%>
+	split 128;
+<% end -%>
+	load balance max seconds 3;
+}
+<% end -%>
+
