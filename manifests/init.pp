@@ -53,8 +53,8 @@ class dhcp (
   # Failover cluster
   Boolean $failover                               = false,
   Enum['primary','secondary'] $failover_role      = 'primary',
-  Stdlib::Compat::Ipv4 $failover_myip             = $facts['networking']['ip'],
-  Optional[Stdlib::Compat::Ipv4] $failover_peer   = undef,
+  Stdlib::Ip::Address $failover_myip              = $facts['networking']['ip'],
+  Optional[Stdlib::Ip::Address] $failover_peer    = undef,
   String $failover_cluster                        = $dhcp::params::failover_cluster,
   Numeric $failover_port                          = $dhcp::params::failover_port,
   # Networks & hosts
