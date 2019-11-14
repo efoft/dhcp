@@ -33,15 +33,15 @@ class dhcp (
   Enum['present','absent']      $ensure           = 'present',
   Optional[String]              $listen_if        = undef,
   # DDNS
-  String                        $ddns_key_name    = $ddns_key_name,
-  Stdlib::Unixpath              $ddns_key_path    = $ddns_key_path,
+  String                        $ddns_key_name    = $dhcp::params::ddns_key_name,
+  Stdlib::Unixpath              $ddns_key_path    = $dhcp::params::ddns_key_path,
   # Failover cluster
   Boolean                       $failover         = false,
   Enum['primary','secondary']   $failover_role    = 'primary',
   Stdlib::Ip::Address           $failover_myip    = $facts['networking']['ip'],
   Optional[Stdlib::Ip::Address] $failover_peer    = undef,
-  String                        $failover_cluster = $failover_cluster,
-  Numeric                       $failover_port    = $failover_port,
+  String                        $failover_cluster = $dhcp::params::failover_cluster,
+  Numeric                       $failover_port    = $dhcp::params::failover_port,
   # OMAPI
   Boolean                       $omapi_enable     = false,
   Numeric                       $omapi_port       = 7911,
@@ -56,7 +56,7 @@ class dhcp (
     fail('For failover cluster failover peer IP must be set')
   }
 
-  if $omapi_enable and ! $omapi_ley {
+  if $omapi_enable and ! $omapi_key {
     fail('omapi_key is required if omapi_enable is true')
   }
 
