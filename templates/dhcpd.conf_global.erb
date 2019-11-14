@@ -30,4 +30,14 @@ failover peer "<%= @failover_cluster %>" {
 	load balance max seconds 3;
 }
 <% end -%>
+<% if @omapi_enable -%>
+
+omapi-port <%= @omapi_port %>;
+omapi-key <%= @omapi_key_name %>;
+
+key <%= @omapi_key_name %> {
+  algorithm HMAC-MD5;
+  secret "<%= @omapi_key %>";
+};
+<% end -%>
 
