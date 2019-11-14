@@ -1,14 +1,13 @@
 {
         "name": "efoft-dhcp",
-        "version": "1.0.1",
+        "version": "1.1.0",
         "author": "efoft",
         "license": "Apache-2.0",
         "source": "https://github.com/efoft/puppet-dhcp.git",
         "dependencies": [
-                { "name": "puppetlabs/stdlib", "version_requirement":">=4.25.1 < 5.0.0" },
-                { "name": "puppetlabs-concat", "version_requirement":">=4.2.1 <5.0.0" }
+                { "name": "puppetlabs/stdlib", "version_requirement":">=4.25.1 < 7.0.0" },
+                { "name": "puppetlabs-concat", "version_requirement":">=4.2.1 < 7.0.0" }
         ],
-        "data_provider": "hiera",
         "operatingsystem_support": [
                 {
                   "operatingsystem": "RedHat",
@@ -28,7 +27,7 @@
         "requirements": [
           {
             "name": "puppet",
-            "version_requirement": ">= 4.5.0 < 5.0.0"
+            "version_requirement": ">= 4.5.0 < 7.0.0"
           }
         ],
         "description": "ICS-DHCP server for CentOS, RHEL."
