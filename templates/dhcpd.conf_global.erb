@@ -15,6 +15,7 @@ one-lease-per-client on;
 deny duplicates;
 
 <% if @failover -%>
+# Failover cluster
 failover peer "<%= @failover_cluster %>" {
         <%= @failover_role %>;
 	address <%= @failover_myip %>;
@@ -32,6 +33,7 @@ failover peer "<%= @failover_cluster %>" {
 <% end -%>
 <% if @omapi_enable -%>
 
+# OMAPI management
 omapi-port <%= @omapi_port %>;
 omapi-key <%= @omapi_key_name %>;
 

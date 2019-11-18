@@ -1,5 +1,5 @@
 # @summary
-# This module only supports subnet declaraion with pools. Pools allow to split network into several ranges with different settings.
+#   This module only supports subnet declaraion with pools. Pools allow to split network into several ranges with different settings.
 #
 # @param network           Subnetwork address.
 # @param netmask           Subnetwork mask.
@@ -18,10 +18,6 @@
 #   IP address of pxe boot server where boot image resides. Can be defined on the subnet level (here)
 #   or otherwise be specific for each pool and defined in a pool.
 #
-# @param filename
-#   The name of boot image for pxe. Can be defined on the subnet level (here)
-#   or otherwise be specific for each pool and defined in a pool.
-#
 # @param ttl #   Default lease time and max lease time are set to this value.  #   Default: 43200 sec
 #
 # @param pools
@@ -32,7 +28,6 @@
 #   - static_only: means that pool only serves the clients that are staticly declared
 #   - pxe
 #   - next_server
-#   - filename
 #   - ttl
 #
 define dhcp::subnet (
@@ -49,7 +44,6 @@ define dhcp::subnet (
   Optional[Stdlib::Ip::Address] $ddns_primary     = undef,
   String                        $ddns_key_name    = $dhcp::ddns_key_name,
   Optional[Stdlib::Ip::Address] $next_server      = undef,
-  String                        $filename         = $dhcp::params::filename,
   Numeric                       $ttl              = 43200,
   Hash                          $pools,
 ) {

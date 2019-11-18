@@ -1,52 +1,53 @@
 
 subnet <%= @network %> netmask <%= @netmask %> {
-<% if @ddns -%>
+<% if   @ddns -%>
         ddns-domainname                 "<%= @domain %>";
 <% end -%>
         option domain-name              "<%= @domain %>";
-<% if !@dns_servers.empty? -%>
+<% if ! @dns_servers.empty? -%>
         option domain-name-servers      <%= @dns_servers.join(', ') %>;
 <% end -%>
         option subnet-mask              <%= @netmask %>;
         option routers                  <%= @router %>;
-<% if !@netbios_servers.empty? -%>
+<% if ! @netbios_servers.empty? -%>
         option netbios-name-servers     <%= @netbios_servers.join(', ') %>;
         option netbios-node-type        8;
+<% end -%>
+<% if   @next_server -%>
+        next-server                     <%= @next_server %>;
 <% end -%>
 
 <% @pools.each do |name, pool| -%>
         pool { # <%= name %>
-<% if @failover -%>
+<%   if @failover -%>
                 failover peer "<%= @failover_cluster %>";
-<% end -%>
-<% if pool['pxe'] -%>
+<%   end -%>
+<%   if pool['pxe'] -%>
                 allow dynamic bootp clients;
                 allow members of "pxeclients";
-<% if pool['next_server'] or @next_server -%>
-                next-server <% if pool['next_server'] %><%= pool['next_server'] %><% else %><%= @next_server %><% end %>;
-<% end -%>
-<% if pool['filename'] or @filename -%>
-                filename "<% if pool['filename'] %><%= pool['filename'] %><% else %><%= @filename %><% end %>";
-<% end -%>
-<% else -%>
+<%     if pool['next_server'] -%>
+                next-server <%= pool['next_server'] %>;
+<%     end -%>
+<%   else -%>
                 deny dynamic bootp clients;
-<% end -%>
-<% if pool['static_only'] -%>
+                deny members of "pxeclients";
+<%   end -%>
+<%   if pool['static_only'] -%>
                 deny unknown-clients;
-<% else -%>
+<%   else -%>
                 allow unknown-clients;
-<% end -%>
+<%   end -%>
                 range <%= pool['start'] %> <%= pool['end'] %>;
-<% if pool['ttl'] -%>
+<%   if pool['ttl'] -%>
                 default-lease-time <%= pool['ttl'] %>;
-<% else -%>
+<%   else -%>
                 default-lease-time <%= @ttl %>;
-<% end -%>
-<% if pool['ttl'] -%>
+<%   end -%>
+<%   if pool['ttl'] -%>
                 max-lease-time <%= pool['ttl'] %>;
-<% else -%>
+<%   else -%>
                 max-lease-time <%= @ttl %>;
-<% end -%>
+<%   end -%>
         }
 <% end -%>
 }
