@@ -12,13 +12,5 @@ option arch code 93 = unsigned integer 16; # RFC4578
 
 class "pxeclients" {
         match if substring (option vendor-class-identifier, 0, 9) = "PXEClient";
-
-        if option arch = 00:06 {
-                filename "bootia32.efi";
-        } else if option arch = 00:07 {
-                filename "bootx64.efi";
-        } else {
-                filename "pxelinux.0";
-        }
 }
 

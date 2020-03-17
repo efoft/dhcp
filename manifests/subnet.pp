@@ -26,8 +26,7 @@
 #   - end:   last IP of the range
 #   Can also contain keys:
 #   - static_only: means that pool only serves the clients that are staticly declared
-#   - pxe
-#   - next_server
+#   - pxe_enable:  override on per pool basis
 #   - ttl
 #
 define dhcp::subnet (
@@ -36,17 +35,25 @@ define dhcp::subnet (
   Stdlib::Ip::Address           $router,
   String                        $domain,
   Array[Stdlib::Ip::Address]    $dns_servers,
-  Array[Stdlib::Ip::Address]    $netbios_servers  = [],
-  Boolean                       $failover         = $dhcp::failover,
-  String                        $failover_cluster = $dhcp::failover_cluster,
-  Boolean                       $ddns             = false,
-  Optional[Array[String]]       $ddns_zones       = undef,
-  Optional[Stdlib::Ip::Address] $ddns_primary     = undef,
-  String                        $ddns_key_name    = $dhcp::ddns_key_name,
-  Optional[Stdlib::Ip::Address] $next_server      = undef,
-  Numeric                       $ttl              = 43200,
   Hash                          $pools,
+  Array[Stdlib::Ip::Address]    $netbios_servers   = [],
+  Boolean                       $failover          = $dhcp::failover,
+  String                        $failover_cluster  = $dhcp::failover_cluster,
+  Boolean                       $ddns              = false,
+  Optional[Array[String]]       $ddns_zones        = undef,
+  Optional[Stdlib::Ip::Address] $ddns_primary      = undef,
+  String                        $ddns_key_name     = $dhcp::ddns_key_name,
+  Numeric                       $ttl               = 43200,
+  Boolean                       $pxe_enable        = false,
+  Optional[Stdlib::Ip::Address] $next_server       = undef,
+  String                        $bootfile_bios     = 'pxelinux.0',
+  String                        $bootfile_efi_x64  = 'bootx64.efi',
+  String                        $bootfile_efi_ia32 = 'syslinux.efi',
 ) {
+
+  if $pxe_enable and ! $next_server {
+    fail('Parameter next_server is required if pxe_enable is true')
+  }
 
   $_ddns_zones = $ddns_zones ?
   {
@@ -60,9 +67,7 @@ define dhcp::subnet (
     default => $ddns_primary
   }
 
-  $pxe_pools = inline_template("<%= @pools.select{|k,v| v['pxe'] == true}.map{|k,| k}.join(',') %>").split(',')
-
-  if ! empty($pxe_pools) {
+  if $pxe_enable {
     realize(Concat::Fragment["enable-pxe-in-${dhcp::params::maincfg}"])
   }
 

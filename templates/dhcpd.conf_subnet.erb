@@ -13,8 +13,16 @@ subnet <%= @network %> netmask <%= @netmask %> {
         option netbios-name-servers     <%= @netbios_servers.join(', ') %>;
         option netbios-node-type        8;
 <% end -%>
-<% if   @next_server -%>
-        next-server                     <%= @next_server %>;
+
+<% if   @pxe_enable -%>
+        if option arch = 00:06 {
+                filename "<%= @bootfile_efi_ia32 %>";
+        } else if option arch = 00:07 {
+                filename "<%= @bootfile_efi_x64 %>";
+        } else {
+                filename "<%= @bootfile_bios %>";
+        }
+        next-server <%= @next_server %>;
 <% end -%>
 
 <% @pools.each do |name, pool| -%>
@@ -22,15 +30,16 @@ subnet <%= @network %> netmask <%= @netmask %> {
 <%   if @failover -%>
                 failover peer "<%= @failover_cluster %>";
 <%   end -%>
-<%   if pool['pxe'] -%>
+<%   if @pxe_enable -%>
+<%   if pool['pxe_enable'] != false -%>
                 allow dynamic bootp clients;
                 allow members of "pxeclients";
-<%     if pool['next_server'] -%>
-                next-server <%= pool['next_server'] %>;
-<%     end -%>
+<%   else -%>
+                deny members of "pxeclients";
+                deny dynamic bootp clients;
+<%   end -%>
 <%   else -%>
                 deny dynamic bootp clients;
-                deny members of "pxeclients";
 <%   end -%>
 <%   if pool['static_only'] -%>
                 deny unknown-clients;

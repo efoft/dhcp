@@ -1,7 +1,6 @@
 # @summary   Installs and configures isc-dhcpd.
 #
 # @param ddns_key_name #   Name of the DDNS update key as it specified in *ddns_key_path* file.
-#
 # @param ddns_key_path
 #   Absolute path to the file where DDNS update key is stored. This file must
 #   be generated with BIND tools and must exists prior DHCP daemon startup.
@@ -29,27 +28,33 @@
 #      mac: '00:00:00:0c:be:13'
 #      comment: 'Sarah laptop'
 #
+# @param pxe_enable           If to include entries allowing pxe clients to receive boot information.
+# @param next_server          IP of tftp server to boot from. If omitted then dnsmasq assumes IP of this server.
+# @param bootfile_bios        Boot file name sent to legacy bios pxe clients.
+# @param bootfile_efi_x64     Boot file name sent to UEFI x86_64 pxe clients.
+# @param bootfile_efi_ia32    Boot file name sent to UEFI x86(ia32) pxe clients.
+#
 class dhcp (
-  Enum['present','absent']      $ensure           = 'present',
-  Optional[String]              $listen_if        = undef,
+  Enum['present','absent']      $ensure            = 'present',
+  Optional[String]              $listen_if         = undef,
   # DDNS
-  String                        $ddns_key_name    = $dhcp::params::ddns_key_name,
-  Stdlib::Unixpath              $ddns_key_path    = $dhcp::params::ddns_key_path,
+  String                        $ddns_key_name     = $dhcp::params::ddns_key_name,
+  Stdlib::Unixpath              $ddns_key_path     = $dhcp::params::ddns_key_path,
   # Failover cluster
-  Boolean                       $failover         = false,
-  Enum['primary','secondary']   $failover_role    = 'primary',
-  Stdlib::Ip::Address           $failover_myip    = $facts['networking']['ip'],
-  Optional[Stdlib::Ip::Address] $failover_peer    = undef,
-  String                        $failover_cluster = $dhcp::params::failover_cluster,
-  Numeric                       $failover_port    = $dhcp::params::failover_port,
+  Boolean                       $failover          = false,
+  Enum['primary','secondary']   $failover_role     = 'primary',
+  Stdlib::Ip::Address           $failover_myip     = $facts['networking']['ip'],
+  Optional[Stdlib::Ip::Address] $failover_peer     = undef,
+  String                        $failover_cluster  = $dhcp::params::failover_cluster,
+  Numeric                       $failover_port     = $dhcp::params::failover_port,
   # OMAPI
-  Boolean                       $omapi_enable     = false,
-  Numeric                       $omapi_port       = 7911,
-  String                        $omapi_key_name   = 'omapi_key',
-  Optional[String]              $omapi_key        = undef,
+  Boolean                       $omapi_enable      = false,
+  Numeric                       $omapi_port        = 7911,
+  String                        $omapi_key_name    = 'omapi_key',
+  Optional[String]              $omapi_key         = undef,
   # Networks & hosts
-  Hash                          $subnets          = {},
-  Hash                          $static_hosts     = {},
+  Hash                          $subnets           = {},
+  Hash                          $static_hosts      = {},
 ) inherits dhcp::params {
 
   if $failover and ! $failover_peer {
